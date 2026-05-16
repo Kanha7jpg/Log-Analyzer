@@ -1,0 +1,15 @@
+# Python artifacts
+__pycache__/
+*.py[cod]
+*.egg-info/
+venv/
+.env
+
+# Database
+*.db
+
+# Ignore PDF files
+*.pdf
+
+# macOS
+.DS_Store
