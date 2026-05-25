@@ -1,5 +1,6 @@
 langgraph
 langchain-core
+langchain
 pydantic
 fastapi
 uvicorn
@@ -7,3 +8,5 @@ groq
 langchain-groq
 langfuse
 python-dotenv
+requests
+python-multipart

@@ -1,0 +1,40 @@
+replicaCount: 1
+
+image:
+  repository: log-analyzer
+  tag: latest
+  pullPolicy: Never
+
+service:
+  type: NodePort
+  port: 8000
+  nodePort: 30080
+
+resources:
+  limits:
+    cpu: "250m"
+    memory: "256Mi"
+  requests:
+    cpu: "125m"
+    memory: "128Mi"
+
+readinessProbe:
+  httpGet:
+    path: /health
+    port: 8000
+  initialDelaySeconds: 5
+  periodSeconds: 5
+  failureThreshold: 3
+
+langfuse:
+  host: "http://langfuse:3000"
+
+groq:
+  # Name of Kubernetes Secret that holds GROQ API key
+  apiKeySecret: "groq-api-key"
+  # Optional: provide a plain API key here (not recommended for production).
+  apiKey: ""
+  # If true and `groq.apiKey` is set, a Secret will be created from the chart
+  createSecret: false
+
+env: {}

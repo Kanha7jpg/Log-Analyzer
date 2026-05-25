@@ -1,0 +1,6 @@
+Thank you for installing log-analyzer.
+
+The service will be available on the configured NodePort. Example:
+
+  NODE_PORT={{ .Values.service.nodePort }}
+  curl http://<minikube-ip>:${NODE_PORT}/health

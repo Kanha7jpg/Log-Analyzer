@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "log-analyzer.fullname" . }}
+  labels:
+    app: {{ include "log-analyzer.name" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "log-analyzer.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "log-analyzer.name" . }}
+    spec:
+      containers:
+        - name: log-analyzer
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 8000
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.readinessProbe.httpGet.path }}
+              port: {{ .Values.readinessProbe.httpGet.port }}
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+          resources:
+            limits:
+              cpu: {{ .Values.resources.limits.cpu }}
+              memory: {{ .Values.resources.limits.memory }}
+            requests:
+              cpu: {{ .Values.resources.requests.cpu }}
+              memory: {{ .Values.resources.requests.memory }}
+          env:
+            - name: LANGFUSE_HOST
+              value: {{ .Values.langfuse.host | quote }}
+{{- if .Values.groq.createSecret }}
+            - name: GROQ_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.groq.apiKeySecret }}
+                  key: GROQ_API_KEY
+{{- else if .Values.groq.apiKey }}
+            - name: GROQ_API_KEY
+              value: {{ .Values.groq.apiKey | quote }}
+{{- end }}
+{{- if .Values.env }}
+{{ toYaml .Values.env | indent 12 }}
+{{- end }}
